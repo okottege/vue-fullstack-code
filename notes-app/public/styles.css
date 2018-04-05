@@ -2,7 +2,7 @@ html, body {
   height: 100%;
 }
 
-#app {
+#mainContainer {
   height: inherit;
   margin: 0 auto;
   display: flex;
