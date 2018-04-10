@@ -15,13 +15,16 @@
           </div>
         </div>
       </div>
-      <input-component @add-note="addNote" :placeholder="placeholder"></input-component>
+      <input-component :placeholder="placeholder"></input-component>
+      <note-count-component></note-count-component>
     </div>
   </div>
 </template>
 
 <script>
 import InputComponent from './components/InputComponent';
+import NoteCountComponent from './components/NoteCountComponent';
+import { EventBus } from './EventBus';
 
 export default {
   name: 'app',
@@ -32,6 +35,9 @@ export default {
       placeholder: 'Enter a Note'
     };
   },
+  created() {
+    EventBus.$on('add-note', event => this.addNote(event));
+  },
   methods: {
     addNote(event) {
       this.notes.push(event.note);
@@ -39,7 +45,8 @@ export default {
     }
   },
   components: {
-    InputComponent
+    InputComponent,
+    NoteCountComponent
   }
 }
 </script>
