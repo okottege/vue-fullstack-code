@@ -15,7 +15,7 @@
           </div>
         </div>
       </div>
-      <input-component :placeholder="placeholder"></input-component>
+      <input-component></input-component>
       <note-count-component></note-count-component>
     </div>
   </div>
@@ -28,22 +28,14 @@ import { EventBus } from './EventBus';
 
 export default {
   name: 'app',
-  data () {
-    return {
-      notes: [],
-      timestamps: [],
-      placeholder: 'Enter a Note'
-    };
-  },
-  created() {
-    EventBus.$on('add-note', event => this.addNote(event));
-  },
-  methods: {
-    addNote(event) {
-      this.notes.push(event.note);
-      this.timestamps.push(event.timestamp)
+  computed: {
+    notes() {
+      return this.$store.getters.getNotes;
+    },
+    timestamps() {
+      return this.$store.getters.getTimestamps;
     }
-  },
+  },  
   components: {
     InputComponent,
     NoteCountComponent
