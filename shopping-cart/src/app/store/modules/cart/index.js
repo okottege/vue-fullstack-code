@@ -15,7 +15,7 @@ const actions = {
         });
     },
     addCartItem({ commit }, cartItem) {
-        axios.post('/api/cart').then(response => {
+        axios.post('/api/cart', cartItem).then(response => {
             commit('UPDATE_CART_ITEMS', response.data);
         });
     },
@@ -41,7 +41,8 @@ const getters = {
         return state.cartItems.reduce((acc, cartItem) => {
             return cartItem.quantity + acc;
         }, 0);
-    }
+    },
+    cartHasItems: state => state.cartItems.length > 0
 };
 
 const cartModule = {
