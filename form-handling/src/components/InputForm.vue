@@ -6,6 +6,12 @@
       </div>
       <button class="ui button">Submit</button>
     </form>
+    <div class="ui segment">
+      <h4 class="ui header">Items</h4>
+      <ul>
+        <li v-for="item in items" class="item" :key="item">{{ item }}</li>
+      </ul>
+    </div>
   </div>
 </template>
 <script>
@@ -19,8 +25,9 @@ export default {
   },
   methods: {
     submitForm(e) {
+      this.items.push(this.newItem);
+      this.newItem = '';
       e.preventDefault();
-      console.log(this.newItem);
     },
   }
 }
