@@ -4,7 +4,11 @@
       <div class="field">
         <label>New Item</label>
         <input v-model="fields.newItem" type="text" placeholder="Add an item!" />
+        <span style="float:right">{{ fields.newItem.length }} / 20</span>
         <span style="color:red">{{ fieldErrors.newItem }} </span>
+        <span style="color:red; display:block" v-if="isNewItemInputLimitExceeded">
+          Must be under <b>twenty</b> characters
+        </span>
       </div>
       <div class="field">
         <label>Email</label>
@@ -20,6 +24,9 @@
           <option>Urgent</option>
         </select>
         <span style="color:red">{{ fieldErrors.urgency }} </span>
+        <span v-if="isNotUrgent" style="color:red; display:block">
+          Must be Moderate to Urgent
+        </span>
       </div>
       <div class="field">
         <div class="ui checkbox">
@@ -28,7 +35,7 @@
           <span style="color:red">{{ fieldErrors.termsAndConditions }} </span>
         </div>
       </div>
-      <button class="ui button">Submit</button>
+      <button :disabled="isNewItemInputLimitExceeded || isNotUrgent" class="ui button">Submit</button>
     </form>
     <div class="ui segment">
       <h4 class="ui header">Items</h4>
@@ -39,8 +46,38 @@
   </div>
 </template>
 <script>
+let apiClient = {
+  count: 1,
+  loadItems: () => {
+    return {
+      then: cb => {
+        setTimeout(() => cb(JSON.parse(localStorage.items || [])), 1000);
+      }
+    };
+  },
+  saveItems: items => {
+    const success = !!(this.count++ % 2);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!success) return reject({ success });
+
+        localStorage.items = JSON.stringify(items);
+        return resolve({ success });
+      }, 1000);
+    });
+  }
+};
+
 export default {
   name: 'InputForm',
+  created() {
+    this.loading = true;
+
+    apiClient.loadItems().then(items => {
+      this.items = items;
+      this.loading = false;
+    });
+  },
   data() {
     return {
       fields: {
@@ -56,6 +93,8 @@ export default {
         urgency: undefined,
         termsAndConditions: undefined,
       },
+      loading: false,
+      saveStatus: 'READY'
     };
   },
   methods: {
@@ -64,6 +103,23 @@ export default {
 
       this.fieldErrors = this.validateForm(this.fields);
       if (Object.keys(this.fieldErrors).length) return;
+
+      const items = [...this.items, this.fields.newItem];
+      this.saveStatus = 'SAVING';
+
+      apiClient.saveItems(items)
+        .then(() => {
+          this.items = items;
+          this.fields.newItem = '';
+          this.fields.email = '';
+          this.fields.urgency = '';
+          this.fields.termsAndConditions = false;
+          this.saveStatus = 'SUCCESS';
+        })
+        .catch(err => {
+          console.log(err);
+          this.saveStatus = 'ERROR';
+        });
 
       this.items.push(this.newItem);
       this.newItem = '';
@@ -90,5 +146,13 @@ export default {
       return validEmailRegExp.test(email);
     },
   },
+  computed: {
+    isNewItemInputLimitExceeded() {
+      return this.fields.newItem.length >= 20;
+    },
+    isNotUrgent() {
+      return this.fields.urgency === 'Nonessential';
+    },
+  }
 };
 </script>
