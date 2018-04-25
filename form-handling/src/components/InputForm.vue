@@ -4,10 +4,12 @@
       <div class="field">
         <label>New Item</label>
         <input v-model="fields.newItem" type="text" placeholder="Add an item!" />
+        <span style="color:red">{{ fieldErrors.newItem }} </span>
       </div>
       <div class="field">
         <label>Email</label>
         <input v-model="fields.email" type="text" placeholder="What's your email?" />
+        <span style="color:red">{{ fieldErrors.email }} </span>
       </div>
       <div class="field">
         <label>Urgency</label>
@@ -17,11 +19,13 @@
           <option>Moderate</option>
           <option>Urgent</option>
         </select>
+        <span style="color:red">{{ fieldErrors.urgency }} </span>
       </div>
       <div class="field">
         <div class="ui checkbox">
           <input v-model="fields.termsAndConditions" type="checkbox" />
           <label>I accept the Terms and Conditions</label>
+          <span style="color:red">{{ fieldErrors.termsAndConditions }} </span>
         </div>
       </div>
       <button class="ui button">Submit</button>
@@ -46,13 +50,44 @@ export default {
         termsAndConditions: false,
       },
       items: [],
+      fieldErrors: {
+        newItem: undefined,
+        email: undefined,
+        urgency: undefined,
+        termsAndConditions: undefined,
+      },
     };
   },
   methods: {
     submitForm(e) {
+      e.preventDefault();
+
+      this.fieldErrors = this.validateForm(this.fields);
+      if (Object.keys(this.fieldErrors).length) return;
+
       this.items.push(this.newItem);
       this.newItem = '';
-      e.preventDefault();
+      this.email = '';
+      this.urgency = '';
+      this.termsAndConditions = false;
+    },
+    validateForm(fields) {
+      const errors = {};
+      if (!fields.newItem) errors.newItem = 'New Item Required.';
+      if (!fields.email) errors.email = 'Email Required.';
+      if (!fields.urgency) errors.urgency = 'Urgency Required.';
+      if (!fields.termsAndConditions) {
+        errors.termsAndConditions = 'Terms and Conditions have to be approved.';
+      }
+
+      if(fields.email && !this.isEmail(fields.email)) {
+        errors.email = 'Invalid Email.';
+      }
+      return errors;
+    },
+    isEmail(email) {
+      const validEmailRegExp = /\S+@\S+\.\S+/;
+      return validEmailRegExp.test(email);
     },
   },
 };
