@@ -35,7 +35,7 @@
           <span style="color:red">{{ fieldErrors.termsAndConditions }} </span>
         </div>
       </div>
-      <button :disabled="isNewItemInputLimitExceeded || isNotUrgent" class="ui button">Submit</button>
+      <button :disabled="submitButtonDisabled" class="ui button">{{ submitButtonText }}</button>
     </form>
     <div class="ui segment">
       <h4 class="ui header">Items</h4>
@@ -46,27 +46,6 @@
   </div>
 </template>
 <script>
-let apiClient = {
-  count: 1,
-  loadItems: () => {
-    return {
-      then: cb => {
-        setTimeout(() => cb(JSON.parse(localStorage.items || [])), 1000);
-      }
-    };
-  },
-  saveItems: items => {
-    const success = !!(this.count++ % 2);
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (!success) return reject({ success });
-
-        localStorage.items = JSON.stringify(items);
-        return resolve({ success });
-      }, 1000);
-    });
-  }
-};
 
 export default {
   name: 'InputForm',
@@ -80,13 +59,6 @@ export default {
   },
   data() {
     return {
-      fields: {
-        newItem: '',
-        email: '',
-        urgency: '',
-        termsAndConditions: false,
-      },
-      items: [],
       fieldErrors: {
         newItem: undefined,
         email: undefined,
@@ -153,6 +125,23 @@ export default {
     isNotUrgent() {
       return this.fields.urgency === 'Nonessential';
     },
+    submitButtonDisabled() {
+      return this.isNewItemInputLimitExceeded()
+          || this.isNotUrgent
+          || this.saveStatus === 'SAVING';
+    },
+    submitButtonText() {
+      switch(this.saveStatus) {
+        case 'SAVING':
+          return 'Saving...';
+        case 'SUCCESS':
+          return 'Saved! Submit another';
+        case 'ERROR':
+          return 'Save failed - Retry?';
+        default:
+          return 'Submit';
+      }
+    }
   }
 };
 </script>
