@@ -52,7 +52,7 @@ export default {
   created() {
     this.loading = true;
 
-    apiClient.loadItems().then(items => {
+    apiClient.loadItems().then((items) => {
       this.items = items;
       this.loading = false;
     });
@@ -66,7 +66,7 @@ export default {
         termsAndConditions: undefined,
       },
       loading: false,
-      saveStatus: 'READY'
+      saveStatus: 'READY',
     };
   },
   methods: {
@@ -88,7 +88,7 @@ export default {
           this.fields.termsAndConditions = false;
           this.saveStatus = 'SUCCESS';
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           this.saveStatus = 'ERROR';
         });
@@ -108,7 +108,7 @@ export default {
         errors.termsAndConditions = 'Terms and Conditions have to be approved.';
       }
 
-      if(fields.email && !this.isEmail(fields.email)) {
+      if (fields.email && !this.isEmail(fields.email)) {
         errors.email = 'Invalid Email.';
       }
       return errors;
@@ -131,7 +131,7 @@ export default {
           || this.saveStatus === 'SAVING';
     },
     submitButtonText() {
-      switch(this.saveStatus) {
+      switch (this.saveStatus) {
         case 'SAVING':
           return 'Saving...';
         case 'SUCCESS':
@@ -141,7 +141,7 @@ export default {
         default:
           return 'Submit';
       }
-    }
-  }
+    },
+  },
 };
 </script>

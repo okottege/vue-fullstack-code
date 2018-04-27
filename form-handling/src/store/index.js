@@ -14,10 +14,36 @@ const mutations = {
   UPDATE_NEW_ITEM(currState, payload) {
     currState.fields.newItem = payload;
   },
-
+  UPDATE_EMAIL(currState, payload) {
+    currState.fields.email = payload;
+  },
+  UPDATE_URGENCY(currState, payload) {
+    currState.fields.urgency = payload;
+  },
+  UPDATE_TERMS_AND_CONDITIONS(currState, payload) {
+    currState.fields.termsAndConditions = payload;
+  },
+  UPDATE_ITEMS(currState, payload) {
+    currState.items = payload;
+  },
+  CLEAR_FIELDS(currState) {
+    currState.fields.newItem = '';
+    currState.fields.email = '';
+    currState.fields.urgency = '';
+    currState.fields.termsAndConditions = false;
+  },
 };
 const actions = {};
-const getters = {};
+const getters = {
+  newItem: state => state.fields.newItem,
+  newItemLength: state => state.fields.newItem.length,
+  isNewItemInputLimitExceeded: state => state.fields.newItem.length >= 20,
+  email: state => state.fields.email,
+  urgency: state => state.fields.urgency,
+  isNotUrgent: state => state.fields.urgency === 'Nonessential',
+  termsAndConditions: state => state.fields.termsAndConditions,
+  items: state => state.items,
+};
 
 Vue.use(Vuex);
 
