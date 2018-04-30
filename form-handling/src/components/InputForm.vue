@@ -80,10 +80,11 @@ export default {
     submitForm(e) {
       e.preventDefault();
 
-      this.fieldErrors = this.validateForm(this.fields);
+      this.fieldErrors = this.validateForm(this.$store.state.fields);
       if (Object.keys(this.fieldErrors).length) return;
 
-      const items = [...this.items, this.fields.newItem];
+      const items = [...this.$store.state.items,
+        this.$store.state.fields.newItem];
       this.saveStatus = 'SAVING';
 
       this.$store.dispatch('saveItems', items)

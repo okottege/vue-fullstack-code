@@ -39,7 +39,7 @@ const apiClient = {
   loadItems: () => (
     {
       then: (cb) => {
-        setTimeout(() => cb(JSON.parse(localStorage.items || [])), 1000);
+        setTimeout(() => cb(JSON.parse(localStorage.items || '[]')), 1000);
       },
     }
   ),
@@ -91,7 +91,7 @@ const getters = {
 
 Vue.use(Vuex);
 
-export default new Vuex({
+export default new Vuex.Store({
   state,
   mutations,
   actions,
