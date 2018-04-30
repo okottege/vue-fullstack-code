@@ -11,41 +11,28 @@ const state = {
   items: [],
 };
 const mutations = {
-  UPDATE_NEW_ITEM(currState, payload) {
-    currState.fields.newItem = payload;
+  UPDATE_NEW_ITEM(state, payload) {
+    state.fields.newItem = payload;
   },
-  UPDATE_EMAIL(currState, payload) {
-    currState.fields.email = payload;
+  UPDATE_EMAIL(state, payload) {
+    state.fields.email = payload;
   },
-  UPDATE_URGENCY(currState, payload) {
-    currState.fields.urgency = payload;
+  UPDATE_URGENCY(state, payload) {
+    state.fields.urgency = payload;
   },
-  UPDATE_TERMS_AND_CONDITIONS(currState, payload) {
-    currState.fields.termsAndConditions = payload;
+  UPDATE_TERMS_AND_CONDITIONS(state, payload) {
+    state.fields.termsAndConditions = payload;
   },
-  UPDATE_ITEMS(currState, payload) {
-    currState.items = payload;
+  UPDATE_ITEMS(state, payload) {
+    state.items = payload;
   },
-  CLEAR_FIELDS(currState) {
-    currState.fields.newItem = '';
-    currState.fields.email = '';
-    currState.fields.urgency = '';
-    currState.fields.termsAndConditions = false;
+  CLEAR_FIELDS(state) {
+    state.fields.newItem = '';
+    state.fields.email = '';
+    state.fields.urgency = '';
+    state.fields.termsAndConditions = false;
   },
 };
-const actions = {};
-const getters = {
-  newItem: state => state.fields.newItem,
-  newItemLength: state => state.fields.newItem.length,
-  isNewItemInputLimitExceeded: state => state.fields.newItem.length >= 20,
-  email: state => state.fields.email,
-  urgency: state => state.fields.urgency,
-  isNotUrgent: state => state.fields.urgency === 'Nonessential',
-  termsAndConditions: state => state.fields.termsAndConditions,
-  items: state => state.items,
-};
-
-Vue.use(Vuex);
 
 const apiClient = {
   count: 1,
@@ -69,6 +56,40 @@ const apiClient = {
     });
   },
 };
+
+const actions = {
+  loadItems: context => new Promise((resolve, reject) => {
+    apiClient.loadItems().then((items) => {
+      context.commit('UPDATE_ITEMS', items);
+      resolve(items);
+    }, (error) => {
+      reject(error);
+    });
+  }),
+  saveItems: (context, payload) => new Promise((resolve, reject) => {
+    const items = payload;
+    apiClient.saveItems(payload).then((response) => {
+      context.commit('UPDATE_ITEMS', items);
+      context.commit('CLEAR_FIELDS');
+      resolve(response);
+    }, (error) => {
+      reject(error);
+    });
+  }),
+};
+
+const getters = {
+  newItem: state => state.fields.newItem,
+  newItemLength: state => state.fields.newItem.length,
+  isNewItemInputLimitExceeded: state => state.fields.newItem.length >= 20,
+  email: state => state.fields.email,
+  urgency: state => state.fields.urgency,
+  isNotUrgent: state => state.fields.urgency === 'Nonessential',
+  termsAndConditions: state => state.fields.termsAndConditions,
+  items: state => state.items,
+};
+
+Vue.use(Vuex);
 
 export default new Vuex({
   state,

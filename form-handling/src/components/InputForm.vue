@@ -3,7 +3,8 @@
     <form @submit="submitForm" class="ui form">
       <div class="field">
         <label>New Item</label>
-        <input v-model="fields.newItem" type="text" placeholder="Add an item!" />
+        <input :value="newItem" @input="onInputChange"
+          name="NEW_ITEM" type="text" placeholder="Add an item!" />
         <span style="float:right">{{ fields.newItem.length }} / 20</span>
         <span style="color:red">{{ fieldErrors.newItem }} </span>
         <span style="color:red; display:block" v-if="isNewItemInputLimitExceeded">
@@ -12,12 +13,14 @@
       </div>
       <div class="field">
         <label>Email</label>
-        <input v-model="fields.email" type="text" placeholder="What's your email?" />
+        <input :value="email" @input="onInputChange"
+          name="EMAIL" type="text" placeholder="What's your email?" />
         <span style="color:red">{{ fieldErrors.email }} </span>
       </div>
       <div class="field">
         <label>Urgency</label>
-        <select v-model="fields.urgency" class="ui fluid search dropdown">
+        <select :value="urgency" @change="onInputChange"
+          name="URGENCY" class="ui fluid search dropdown">
           <option disabled value="">Please select one</option>
           <option>Nonessential</option>
           <option>Moderate</option>
@@ -30,7 +33,8 @@
       </div>
       <div class="field">
         <div class="ui checkbox">
-          <input v-model="fields.termsAndConditions" type="checkbox" />
+          <input :checked="termsAndConditions" @change="onInputChange"
+            name="TERMS_AND_CONDITIONS" type="checkbox" />
           <label>I accept the Terms and Conditions</label>
           <span style="color:red">{{ fieldErrors.termsAndConditions }} </span>
         </div>
@@ -47,15 +51,18 @@
 </template>
 <script>
 
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'InputForm',
   created() {
     this.loading = true;
-
-    apiClient.loadItems().then((items) => {
-      this.items = items;
-      this.loading = false;
-    });
+    this.$store.dispatch('loadItems')
+      .then(() => {
+        this.loading = false;
+      }).catch((error) => {
+        console.log(error);
+      });
   },
   data() {
     return {
@@ -79,25 +86,18 @@ export default {
       const items = [...this.items, this.fields.newItem];
       this.saveStatus = 'SAVING';
 
-      apiClient.saveItems(items)
+      this.$store.dispatch('saveItems', items)
         .then(() => {
-          this.items = items;
-          this.fields.newItem = '';
-          this.fields.email = '';
-          this.fields.urgency = '';
-          this.fields.termsAndConditions = false;
           this.saveStatus = 'SUCCESS';
-        })
-        .catch((err) => {
-          console.log(err);
+        }).catch((error) => {
+          console.log(error);
           this.saveStatus = 'ERROR';
         });
-
-      this.items.push(this.newItem);
-      this.newItem = '';
-      this.email = '';
-      this.urgency = '';
-      this.termsAndConditions = false;
+    },
+    onInputChange(e) {
+      const element = e.target;
+      const value = element.name === 'TERMS_AND_CONDITIONS' ? element.checked : element.value;
+      this.$store.commit(`UPDATE_${element.name}`, value);
     },
     validateForm(fields) {
       const errors = {};
@@ -119,12 +119,16 @@ export default {
     },
   },
   computed: {
-    isNewItemInputLimitExceeded() {
-      return this.fields.newItem.length >= 20;
-    },
-    isNotUrgent() {
-      return this.fields.urgency === 'Nonessential';
-    },
+    ...mapGetters([
+      'newItem',
+      'newItemLength',
+      'isNewItemInputLimitExceeded',
+      'email',
+      'urgency',
+      'isNotUrgent',
+      'termsAndConditions',
+      'items',
+    ]),
     submitButtonDisabled() {
       return this.isNewItemInputLimitExceeded()
           || this.isNotUrgent
