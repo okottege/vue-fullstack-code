@@ -5,9 +5,9 @@
         <label>New Item</label>
         <input :value="newItem" @input="onInputChange"
           name="NEW_ITEM" type="text" placeholder="Add an item!" />
-        <span style="float:right">{{ fields.newItem.length }} / 20</span>
+        <span style="float:right">{{ newItemLength }} / 20</span>
         <span style="color:red">{{ fieldErrors.newItem }} </span>
-        <span style="color:red; display:block" v-if="isNewItemInputLimitExceeded">
+        <span v-if="isNewItemInputLimitExceeded" style="color:red; display:block">
           Must be under <b>twenty</b> characters
         </span>
       </div>
@@ -131,7 +131,7 @@ export default {
       'items',
     ]),
     submitButtonDisabled() {
-      return this.isNewItemInputLimitExceeded()
+      return this.isNewItemInputLimitExceeded
           || this.isNotUrgent
           || this.saveStatus === 'SAVING';
     },

@@ -43,7 +43,7 @@ const apiClient = {
       },
     }
   ),
-  saveItems: (items) => {
+  saveItems(items) {
     /* eslint-disable no-plusplus  */
     const success = !!(this.count++ % 2);
     return new Promise((resolve, reject) => {
