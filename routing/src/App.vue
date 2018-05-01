@@ -12,10 +12,25 @@
 </template>
 
 <script>
+import RouterView from './components/RouterView';
+import IndexBlurb from './components/IndexBlurb';
+import DunkirkBlurb from './components/DunkirkBlurb';
+import InterstellarBlurb from './components/InterstellarBlurb';
+import DarkKnightBlurb from './components/TheDarkKnightBlurb';
+
+const routes = [
+  { path: '/', component: IndexBlurb },
+  { path: '/dunkirk', component: DunkirkBlurb },
+  { path: '/interstellar', component: InterstellarBlurb },
+  { path: '/the-dark-knight-rises', component: DarkKnightBlurb },
+];
+
 export default {
   name: 'App',
-  comments: {},
-}
+  components: {
+    RouterView,
+  },
+};
 </script>
 
 <style lang="scss">
