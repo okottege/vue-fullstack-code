@@ -28,7 +28,7 @@ export default {
     this.currentView = view === undefined ? NotFoundView : view.component;
 
     EventBus.$on('navigate', () => {
-      this.currentView = view.component;
+      this.currentView = this.getRouteObject().component;
     });
   },
   methods: {
