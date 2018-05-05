@@ -11,7 +11,7 @@
         <CartListItem :cartItem="cartItem" />
       </li>
       <div class="cart-details">
-        <p>Total Quantity: 
+        <p>Total Quantity:
             <span class="has-text-weight-bold">
                 {{ cartQuantity }}
             </span>
@@ -45,9 +45,6 @@ export default {
           'cartQuantity',
           'cartHasItems'
       ])
-  },
-  created() {
-      this.$store.dispatch('getCartItems');
   },
   components: {
       CartListItem
