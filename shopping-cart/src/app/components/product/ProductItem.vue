@@ -17,7 +17,11 @@
           {{ productItem.created_at }}
         </span>
       </p>
-      <button class="button is-primary product-item__button">Add to Cart</button>
+      <button 
+      class="button is-primary product-item__button"
+      @click="addAndGoToCart(productItem)">
+        Add to Cart
+      </button>
     </div>
     <div class="product-item__image">
       <img :src="require(`../../assets/${productItem.image_tag}`)" />
@@ -32,6 +36,15 @@ export default {
   computed: {
     productItem() {
       return this.$store.getters.productItemFromId(Number(this.id));
+    }
+  },
+  methods: {
+    addAndGoToCart(productItem) {
+      this.$store
+        .dispatch('addCartItem', productItem)
+        .then(() => {
+          this.$router.push('/cart');  
+        });
     }
   }
 }
