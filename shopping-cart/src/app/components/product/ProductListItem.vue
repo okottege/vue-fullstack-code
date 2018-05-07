@@ -23,7 +23,7 @@ export default {
       ...mapActions([
           'addCartItem'
       ])
-  }
+  },
 }
 </script>
 <style scoped>
