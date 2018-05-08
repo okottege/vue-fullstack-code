@@ -23,9 +23,6 @@ import ProductListItem from './productListItem';
 
 export default {
   name: 'ProductList',
-  created() {
-      this.$store.dispatch('getProductItems');
-  },
   computed: {
     ...mapGetters([
       // Map this.productItems to this.$store.getters.productItems

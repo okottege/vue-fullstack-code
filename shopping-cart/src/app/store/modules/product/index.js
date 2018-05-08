@@ -9,14 +9,17 @@ const mutations = {
     }
 };
 const actions = {
-    getProductItems({ commit }) {
-        axios.get('/api/products').then(response => {
+    getProductItems({ commit }, token) {
+        axios.get(`/api/products?token=${token}`).then(response => {
             commit('UPDATE_PRODUCT_ITEMS', response.data);
         });
     }
 };
 const getters = {
-    productItems: state => state.productItems
+    productItems: state => state.productItems,
+    productItemFromId: (state) => (id) => {
+      return state.productItems.find(productItem => productItem.id === id);
+    }
 };
 
 const productModule = {

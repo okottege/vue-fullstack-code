@@ -9,19 +9,19 @@ const mutations = {
     }
 };
 const actions = {
-    getCartItems({ commit }) {
-        axios.get('/api/cart').then(response => {
+    getCartItems({ commit }, token) {
+        axios.get(`/api/cart?token=${token}`).then(response => {
             commit('UPDATE_CART_ITEMS', response.data);
         });
     },
     addCartItem({ commit }, cartItem) {
-        axios.post('/api/cart', cartItem).then(response => {
+        return axios.post('/api/cart', cartItem).then(response => {
             commit('UPDATE_CART_ITEMS', response.data);
         });
     },
     removeCartItem({ commit }, cartItem) {
         axios.post('api/cart/delete', cartItem).then(response => {
-            commit('UPDATE_CART_ITEMS', response.data);    
+            commit('UPDATE_CART_ITEMS', response.data);
         });
     },
     removeAllCartItems({ commit }) {
