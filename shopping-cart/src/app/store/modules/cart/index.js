@@ -9,8 +9,8 @@ const mutations = {
     }
 };
 const actions = {
-    getCartItems({ commit }) {
-        axios.get('/api/cart').then(response => {
+    getCartItems({ commit }, token) {
+        axios.get(`/api/cart?token=${token}`).then(response => {
             commit('UPDATE_CART_ITEMS', response.data);
         });
     },
@@ -21,7 +21,7 @@ const actions = {
     },
     removeCartItem({ commit }, cartItem) {
         axios.post('api/cart/delete', cartItem).then(response => {
-            commit('UPDATE_CART_ITEMS', response.data);    
+            commit('UPDATE_CART_ITEMS', response.data);
         });
     },
     removeAllCartItems({ commit }) {
