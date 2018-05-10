@@ -38,15 +38,24 @@ describe('App.vue', () => {
       inputField = wrapper.find('input');
       inputField.element.value = 'New Item';
       inputField.trigger('input');
+    });
 
-      it('should update the "text" data property', () => {
-        expect(wrapper.vm.item).to.equal('New Item');
-      });
+    it('should update the "text" data property', () => {
+      expect(wrapper.vm.item).to.equal('New Item');
+    });
 
-      it('should enable the "Add" button when text input is populated', () => {
+    it('should enable the "Add" button when text input is populated', () => {
+      const addItemButton = wrapper.find(' .ui.button');
+      expect(addItemButton.element.disabled).to.be.false;
+    });
+
+    describe('and then clears the input', () => {
+      it('should disable the "Add" button', () => {
         const addItemButton = wrapper.find(' .ui.button');
+        inputField.element.value = '';
+        inputField.trigger('input');
 
-        expect(addItemButton.element.disabled).to.be.false;
+        expect(addItemButton.element.disabled).to.be.true;
       });
     });
   });
