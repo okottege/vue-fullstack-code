@@ -58,5 +58,15 @@ describe('App.vue', () => {
         expect(addItemButton.element.disabled).to.be.true;
       });
     });
+
+    describe('and then submits the form', () => {
+      let addItemButton;
+
+      beforeEach(() => {
+        wrapper.setData({item: 'New Item'});
+        addItemButton = wrapper.find('.ui.button');
+        addItemButton.trigger('click');
+      });
+    });
   });
 });
